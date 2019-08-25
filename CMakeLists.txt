@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.10.2 FATAL_ERROR)
+
+project(planar_segmentation)
+
+find_package(PCL 1.2 REQUIRED)
+
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+add_executable (planar_segmentation src/main.cpp src/planeSegmentation.cpp src/SegmentationandClustering.hpp)
+target_link_libraries (planar_segmentation ${PCL_LIBRARIES})
