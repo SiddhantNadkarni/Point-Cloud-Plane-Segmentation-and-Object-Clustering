@@ -2,5 +2,6 @@
 
 !.gitignore
 !README.md
-!src/*../*
+!src
+!src/*
 !CMakeLists.txt
