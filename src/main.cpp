@@ -1,18 +1,20 @@
-#include "SegmentationandClustering.hpp"
+#include "SegmentationandClustering.h"
+#include "planeSegmentation.cpp"
 
-
-//visualization 
-pcl::visualization::PCLVisualizer::Ptr simpleVis (pcl::PointCloud<pcl::PointXYZ>::ConstPtr cloud, std::string s)
+ 
+pcl::visualization::PCLVisualizer::Ptr simpleVis (pcl::PointCloud<pcl::PointXYZRGB>::ConstPtr cloud, std::string s)
 {
 
   pcl::visualization::PCLVisualizer::Ptr viewer (new pcl::visualization::PCLVisualizer (s));
   viewer->setBackgroundColor (0, 0, 0);
-  viewer->addPointCloud<pcl::PointXYZ> (cloud, "sample cloud");
+  viewer->addPointCloud<pcl::PointXYZRGB> (cloud, "sample cloud");
   viewer->setPointCloudRenderingProperties (pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 1, "sample cloud");
   // viewer->addCoordinateSystem (1.0);
   viewer->initCameraParameters ();
   return (viewer);
 }
+
+
 
 
 int
@@ -24,13 +26,13 @@ main (int argc, char** argv)
 	}
 
 	//Initialize all point clouds
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_blob (new pcl::PointCloud<pcl::PointXYZ>); 
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZ>), cloud_p (new pcl::PointCloud<pcl::PointXYZ>), cloud_f (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered_z (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_segmented (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_segmented2 (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_blob (new pcl::PointCloud<pcl::PointXYZRGB>); 
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered (new pcl::PointCloud<pcl::PointXYZRGB>), cloud_p (new pcl::PointCloud<pcl::PointXYZRGB>), cloud_f (new pcl::PointCloud<pcl::PointXYZRGB>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_filtered_z (new pcl::PointCloud<pcl::PointXYZRGB>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_segmented (new pcl::PointCloud<pcl::PointXYZRGB>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud_segmented2 (new pcl::PointCloud<pcl::PointXYZRGB>);
 
-  planeSegmentationAndClustering pc(cloud_filtered, cloud_blob, cloud_p, cloud_segmented, cloud_filtered_z, cloud_f, cloud_segmented2);
+  planeSegmentationAndClustering<pcl::PointXYZRGB> pc(cloud_filtered, cloud_blob, cloud_p, cloud_segmented, cloud_filtered_z, cloud_f, cloud_segmented2);
 
   // Fill in the cloud data
   pcl::PCDReader reader;
@@ -62,8 +64,8 @@ main (int argc, char** argv)
   pc.getClusters(cloud_segmented, clusterThreshold1); 
 
   //Point Clouds to Visualize clusters
-  pcl::PointCloud<pcl::PointXYZ>::Ptr basic_cloud_ptr1 (new pcl::PointCloud<pcl::PointXYZ>);
-  pcl::PointCloud<pcl::PointXYZ>::Ptr basic_cloud_ptr2 (new pcl::PointCloud<pcl::PointXYZ>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr basic_cloud_ptr1 (new pcl::PointCloud<pcl::PointXYZRGB>);
+  pcl::PointCloud<pcl::PointXYZRGB>::Ptr basic_cloud_ptr2 (new pcl::PointCloud<pcl::PointXYZRGB>);
 
   reader.read("outputs/cloud_cluster_0.pcd", *basic_cloud_ptr1);
   reader.read("outputs/cloud_cluster_1.pcd", *basic_cloud_ptr2);
@@ -99,8 +101,8 @@ main (int argc, char** argv)
   	  //view the first two clusters
   	
 
-  	pcl::PointCloud<pcl::PointXYZ>::Ptr basic_cloud_ptr3 (new pcl::PointCloud<pcl::PointXYZ>);
-  	pcl::PointCloud<pcl::PointXYZ>::Ptr basic_cloud_ptr4 (new pcl::PointCloud<pcl::PointXYZ>);
+  	pcl::PointCloud<pcl::PointXYZRGB>::Ptr basic_cloud_ptr3 (new pcl::PointCloud<pcl::PointXYZRGB>);
+  	pcl::PointCloud<pcl::PointXYZRGB>::Ptr basic_cloud_ptr4 (new pcl::PointCloud<pcl::PointXYZRGB>);
   	std::stringstream ss;
 
   	std::cout << "Enter the Cluster Number that you wish to recluster i.e. either 0 or 1" << std::endl;
@@ -113,7 +115,7 @@ main (int argc, char** argv)
 
   	reader.read(ss.str(), *cloud_segmented2);
   	double clusterThreshold2 = atof(argv[4]);
-  	pc.getClusters(cloud_segmented2, clusterThreshold2);
+  	// pc.getClusters(cloud_segmented2, clusterThreshold2);
 
 
   	reader.read("outputs/cloud_cluster_0.pcd", *basic_cloud_ptr1);
@@ -147,18 +149,6 @@ main (int argc, char** argv)
   	}
 
   }
-
-
-
-
-
-  
-
-
-
-
-
-
 
   return (0);
 }
