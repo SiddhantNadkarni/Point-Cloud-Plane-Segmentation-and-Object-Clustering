@@ -3,4 +3,4 @@
 !.gitignore
 !README.md
 !src/*../*
-!CMakeLists.txts
+!CMakeLists.txt
